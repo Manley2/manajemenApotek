@@ -8,9 +8,16 @@
     <div class="py-8 px-6">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-lg font-bold">Daftar Obat</h3>
-            <a href="{{ route('obat.create') }}" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
-                + Tambah Obat
-            </a>
+            <div class="flex space-x-2">
+                <a href="{{ route('cart.index') }}"
+                   class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                    🛒 Lihat Keranjang
+                </a>
+                <a href="{{ route('obat.create') }}"
+                   class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
+                    + Tambah Obat
+                </a>
+            </div>
         </div>
 
         @if (session('success'))
@@ -32,29 +39,40 @@
                     </tr>
                 </thead>
                 <tbody class="text-gray-700">
-                    @foreach ($obats as $index => $obat)
-                        <tr class="border-t">
+                    @forelse ($obats as $index => $obat)
+                        <tr class="border-t hover:bg-gray-50">
                             <td class="px-4 py-2">{{ $index + 1 }}</td>
-                            <td class="px-4 py-2">{{ $obat->nama }}</td>
+                            <td class="px-4 py-2 font-semibold">{{ $obat->nama }}</td>
                             <td class="px-4 py-2">{{ $obat->jenis }}</td>
                             <td class="px-4 py-2">{{ $obat->stok }}</td>
                             <td class="px-4 py-2">Rp {{ number_format($obat->harga, 0, ',', '.') }}</td>
                             <td class="px-4 py-2 space-x-2">
                                 <a href="{{ route('obat.edit', $obat->id) }}"
-                                   class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded">Edit</a>
+                                   class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded text-sm">
+                                    Edit
+                                </a>
                                 <form action="{{ route('obat.destroy', $obat->id) }}" method="POST" class="inline">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"
                                         onclick="return confirm('Yakin ingin menghapus obat ini?')"
-                                        class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">Hapus</button>
+                                        class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm">
+                                        Hapus
+                                    </button>
                                 </form>
+                                <a href="{{ route('cart.add', $obat->id) }}"
+                                   class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm">
+                                    + Keranjang
+                                </a>
                             </td>
                         </tr>
-                    @endforeach
-                    @if ($obats->isEmpty())
-                        <tr><td colspan="6" class="text-center py-4 text-gray-500">Belum ada data obat.</td></tr>
-                    @endif
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-gray-500">
+                                Belum ada data obat.
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

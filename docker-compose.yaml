@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: manajemenapotek_app
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www/html
+    environment:
+      - DB_CONNECTION=mysql
+      - DB_HOST=host.docker.internal
+      - DB_PORT=8111
+      - DB_DATABASE=manajemen_apotek
+      - DB_USERNAME=faridali
+      - DB_PASSWORD=farid_098
+    networks:
+      - laravelnet
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins_server
+    ports:
+      - "8090:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - laravelnet
+
+networks:
+  laravelnet:
+
+volumes:
+  jenkins_home:

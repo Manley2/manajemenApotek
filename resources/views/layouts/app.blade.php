@@ -11,7 +11,7 @@
     <!-- Navbar -->
     <nav class="bg-blue-600 text-white px-6 py-4 shadow-md">
         <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-semibold"> Web Manajemen Apotek</h1>
+            <h1 class="text-xl font-semibold"> Web Manajemen Obat Apotek</h1>
             <div class="space-x-4">
                 <a href="{{ route('obat.index') }}" class="hover:underline">Dashboard</a>
                 <a href="{{ route('obat.create') }}" class="hover:underline"></a>

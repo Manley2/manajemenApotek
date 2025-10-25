@@ -4,8 +4,8 @@
 <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-white">
     <div class="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl transition-all">
         <div class="text-center mb-6">
-            <h2 class="text-3xl font-bold text-blue-600 mb-2">Selamat Datang 👋</h2>
-            <p class="text-gray-500 text-sm">Masuk untuk mengelola apotekmu</p>
+            <h2 class="text-3xl font-bold text-blue-600 mb-2">Selamat Datang </h2>
+            <p class="text-gray-500 text-sm">Masuk untuk mengelola obat apotekmu</p>
         </div>
 
         @if(session('status'))

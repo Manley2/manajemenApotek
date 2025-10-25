@@ -31,6 +31,7 @@
 
             <div class="flex justify-end space-x-2">
                 <a href="{{ route('obat.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">Batal</a>
+                <a href="{{ route('cart.add', $obat->id) }}" class="btn btn-success btn-sm">Keranjang</a>
                 <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded">Update</button>
             </div>
         </form>

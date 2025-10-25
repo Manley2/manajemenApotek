@@ -3,13 +3,18 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ObatController;
-
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\TransactionController;
 Route::get('/', function () {
     return view('welcome');
 });
 
 // GANTI bagian ini
 Route::get('/dashboard', [ObatController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::get('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
+Route::get('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+Route::get('/transaction', [TransactionController::class, 'index'])->name('transaction.index');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
