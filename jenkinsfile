@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   environment {
-    IMAGE_NAME = 'manley2/pipeline_laravel'              // Ganti 'awanmh' dengan username Docker Hub kalian
+    IMAGE_NAME = 'manley2/test_laravel'              // Ganti 'awanmh' dengan username Docker Hub kalian
     REGISTRY_CREDENTIALS = 'dockerhub-credentials'
   }
 
