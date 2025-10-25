@@ -2,8 +2,8 @@ pipeline {
   agent any
 
   environment {
-    IMAGE_NAME = 'manley2/pipeline_laravel'              // Ganti 'awanmh' dengan username Docker Hub kalian
-    REGISTRY_CREDENTIALS = 'dockerhub-credentials'
+    IMAGE_NAME = 'manley2/pipeline_laravel'          // nama image di Docker Hub
+    REGISTRY_CREDENTIALS = 'dockerhub-credentials'   // ID credential Docker Hub di Jenkins
   }
 
   stages {
@@ -17,19 +17,28 @@ pipeline {
 
     stage('Build') {
       steps {
-        bat 'echo "Mulai build aplikasi (Windows)"'
+        sh 'echo "Mulai build aplikasi (Linux)"'
+        // Jalankan composer install (kalau butuh)
+        sh '''
+          if [ -f composer.json ]; then
+            echo "Menjalankan composer install..."
+            composer install --no-interaction --prefer-dist --optimize-autoloader
+          else
+            echo "composer.json tidak ditemukan, skip composer install"
+          fi
+        '''
       }
     }
 
     stage('Build Docker Image') {
       steps {
         withCredentials([usernamePassword(credentialsId: env.REGISTRY_CREDENTIALS, usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-          bat """
-            echo Login Docker sebelum build...
-            docker login -u %USER% -p %PASS%
-            docker build -t ${env.IMAGE_NAME}:${env.BUILD_NUMBER} .
+          sh '''
+            echo "Login Docker sebelum build..."
+            echo "$PASS" | docker login -u "$USER" --password-stdin
+            docker build -t ${IMAGE_NAME}:${BUILD_NUMBER} .
             docker logout
-          """
+          '''
         }
       }
     }
@@ -37,14 +46,14 @@ pipeline {
     stage('Push Docker Image') {
       steps {
         withCredentials([usernamePassword(credentialsId: env.REGISTRY_CREDENTIALS, usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-          bat """
-            echo Login Docker untuk push...
-            docker login -u %USER% -p %PASS%
-            docker push ${env.IMAGE_NAME}:${env.BUILD_NUMBER}
-            docker tag ${env.IMAGE_NAME}:${env.BUILD_NUMBER} ${env.IMAGE_NAME}:latest
-            docker push ${env.IMAGE_NAME}:latest
+          sh '''
+            echo "Login Docker untuk push..."
+            echo "$PASS" | docker login -u "$USER" --password-stdin
+            docker push ${IMAGE_NAME}:${BUILD_NUMBER}
+            docker tag ${IMAGE_NAME}:${BUILD_NUMBER} ${IMAGE_NAME}:latest
+            docker push ${IMAGE_NAME}:latest
             docker logout
-          """
+          '''
         }
       }
     }
