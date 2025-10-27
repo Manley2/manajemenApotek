@@ -1,20 +1,27 @@
 pipeline {
-    agent {
-        docker {
-            image 'composer:2'          // Gunakan image composer yang sudah ada PHP & Composer
-            args '-u root'              // Jalankan sebagai root agar bisa akses filesystem
-        }
-    }
+    agent any
 
     environment {
-        DOCKER_IMAGE = "manley2/manajemenapotek"   // ganti dengan nama repo Docker Hub kamu
-        DOCKER_TAG = "latest"                      // bisa juga pakai "${BUILD_NUMBER}" kalau mau versi unik
+        DOCKER_IMAGE = "manley2/manajemenapotek"
+        DOCKER_TAG = "latest"
     }
 
     stages {
         stage('Checkout') {
             steps {
                 git 'https://github.com/Manley2/manajemenApotek.git'
+            }
+        }
+
+        stage('Install Composer') {
+            steps {
+                sh '''
+                echo "📦 Menginstal Composer..."
+                php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+                php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+                rm composer-setup.php
+                composer --version
+                '''
             }
         }
 
@@ -53,10 +60,7 @@ pipeline {
                     sh '''
                     echo "🔑 Login ke Docker Hub..."
                     echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-
-                    echo "🚀 Push image ke Docker Hub..."
                     docker push $DOCKER_IMAGE:$DOCKER_TAG
-
                     docker logout
                     '''
                 }
